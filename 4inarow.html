@@ -1,0 +1,51 @@
+<html lang="en">
+  <body>
+	<p id="board">There was an error loading the javascript</p>
+	<button type ="button", onclick="initBoard(board)">Reset game</button>
+	<button type ="button", onclick="doTestSet()">Test setting</button>
+	
+	<script>
+		"use strict";
+		var matrix = [];
+		initBoard(matrix);
+		
+		
+		function doTestSet()
+		{
+			document.getElementById('00').innerHTML = "potato";
+		}
+		
+		function onClickBoard(x, y)
+		{
+			document.getElementById(x.toString()+y).innerHTML = "yay!";
+		
+		}
+		
+		function atribBuilder(atrib, value)
+		{
+			return atrib + "=\"" + value + "\", ";
+		}
+		
+		//Sets up a blank game board, ready for a new game
+		function initBoard(board)
+		{
+			var text = "<table style= 'width:100%'>";
+			for(var y = 5; y >= 0; --y) //Initialize game board
+			{
+				text += "<tr>";
+				for(var x = 0; x < 7; ++x)
+				{
+					text += "<td " +
+					atribBuilder("id", x.toString() + y) +
+					atribBuilder("onClick", "onClickBoard(" + x + "," + y + ")") +
+					'>test</td>';
+					//onClickBoard(x,y)
+				}
+				text += "</tr>";
+			}
+			text += "</table>";
+			document.getElementById("board").innerHTML = text;
+		}
+	</script>
+  </body>
+</html>
