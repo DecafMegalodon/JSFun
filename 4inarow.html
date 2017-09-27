@@ -2,8 +2,8 @@
   <body id="body" onload="initBoard()">
 	<p id="board">There was an error loading the javascript</p>
 	<button type ="button", onclick="initBoard(board)">Reset game</button><br>
-	<input id="rowCount" type="number" min="1" value="6">Rows</input><br>
-	<input id="colCount" type="number" min="1" value="7">Columns</input><br>
+	<input id="rowCount" type="number" min="1" max="50" value="6">Rows</input><br> <!--Although this field is limited to 50, code should work up to huge numbers, if you're patient enough-->
+	<input id="colCount" type="number" min="1" max="50" value="7">Columns</input><br>
 	<input id="inARow" type="number" min="1" value="4">Number in a row required to win</input><br> <!--Doesn't do anything yet. This will be used for win detection-->
 	
 	<script>
@@ -66,6 +66,7 @@
 			curColor = "Blue"
 			winner = false;
 			var text = "<table style= 'width:1%'>"; 
+			var tdTextEnd = atribBuilder("data-hasPiece", 0) + '><img src="img/chipNone.png" alt = "No piece"></td>';
 			//1% to force cells together until proper css/styling is written
 			for(var y = boardHeight-1; y >= 0; --y) //Initialize game board
 			{
@@ -74,9 +75,8 @@
 				{
 					text += "<td " +
 					atribBuilder("id", x.toString() + y) +
-					atribBuilder("onClick", "onClickBoard(" + x + "," + y + ")") +
-					atribBuilder("data-hasPiece", 0) +
-					'><img src="img/chipNone.png" alt = "No piece"></td>';
+					atribBuilder("onClick", "onClickBoard(" + x + "," + y + ")") + tdTextEnd;
+
 				}
 				text += "</tr>";
 			}
