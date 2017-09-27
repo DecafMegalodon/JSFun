@@ -1,41 +1,44 @@
 <html lang="en">
-  <body>
+  <body id="body" onload="initBoard()">
 	<p id="board">There was an error loading the javascript</p>
-	<button type ="button", onclick="initBoard(board)">Reset game</button>
+	<button type ="button", onclick="initBoard(board)">Reset game</button><br>
+	<input id="rowCount" type="number" min="1" value="6">Rows</input><br>
+	<input id="colCount" type="number" min="1" value="7">Columns</input><br>
+	<input id="inARow" type="number" min="1" value="4">Number in a row required to win</input><br> <!--Doesn't do anything yet. This will be used for win detection-->
 	
 	<script>
 		"use strict";
-		var BOARDHEIGHT = 6;
-		var BOARDWIDTH = 7;
+		var boardHeight;
+		var boardWidth;
 		
 		var gameBoard = [];
 		var curColor = "Blue"; //Will alternate between blue and red
-		initBoard(gameBoard);
+		var winner;
 		
 		//Triggers on clicking any of the td elements on the board
 		//We don't need the y argument at the moment, but in the interest of
 		//Future proofing the script, it's left included
 		function onClickBoard(x, y)
 		{
-			//document.getElementById(x.toString()+y).innerHTML = "yay!";
-			processTurn(x);
 			//Logic path:
 			//Find the lowest open space, if any on the col
 			//If there is one, put a game piece in that slot and change turns
 			//    Otherwise, ignore the input and don't change turns
 			//Check to see if there is a winner after a successful move.
 			//    If there is a winner, display so (somehow)
+			var turnSuccessful = processTurn(x);
+			//if(turnSuccessful)
+			//{checkWinner();}
 		}
 		
 		//Places the appropriate game piece, if possible
 		//Ignores moves which can't place a piece due to the col being full
 		function processTurn(x)
 		{
-			for(var y = 0; y < BOARDHEIGHT; y++)
+			for(var y = 0; y < boardHeight; y++)
 			{
 				var curCell = document.getElementById(x.toString()+y);
 				var hasPiece = curCell.getAttribute("data-hasPiece");
-				console.log(hasPiece);
 				if(hasPiece == false)
 				{
 					curCell.innerHTML = curColor;
@@ -49,7 +52,7 @@
 			return false;
 		}
 		
-		//Takes an atrib and value pair and makes a friendly to use
+		//Takes an atrib and value pair and makes a friendly to use html attribute
 		function atribBuilder(atrib, value)
 		{
 			return atrib + "=\"" + value + "\", ";
@@ -58,11 +61,16 @@
 		//Sets up a blank game board, ready for a new game
 		function initBoard(board)
 		{
-			var text = "<table style= 'width:100%'>";
-			for(var y = BOARDHEIGHT-1; y >= 0; --y) //Initialize game board
+			boardWidth = document.getElementById('colCount').value;
+			boardHeight = document.getElementById('rowCount').value;
+			curColor = "Blue"
+			winner = false;
+			var text = "<table style= 'width:1%'>"; 
+			//1% to force cells together until proper css/styling is written
+			for(var y = boardHeight-1; y >= 0; --y) //Initialize game board
 			{
 				text += "<tr>";
-				for(var x = 0; x < BOARDWIDTH; ++x)
+				for(var x = 0; x < boardWidth; ++x)
 				{
 					text += "<td " +
 					atribBuilder("id", x.toString() + y) +
