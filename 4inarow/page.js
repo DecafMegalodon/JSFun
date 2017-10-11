@@ -93,6 +93,7 @@ function doGameMove(col)
 function getNewGameID()
 {
 	var xmlhttp = new XMLHttpRequest(); //No support for ancient IE, sorry. Time to upgrade.
+	
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("gameID").value = this.responseText;
@@ -102,17 +103,23 @@ function getNewGameID()
 	xmlhttp.send();
 }
 
+function leaveGame()
+{
+	var restartButton = document.getElementById("restartButton");
+	restartButton.innerHTML = "Start new game";
+	document.getElementById("gameStatus").innerHTML = "You have left your game";
+	document.getElementById("title").innerHTML = "No game running";
+	restartButton.onclick = function() {startNewGame()};
+	document.getElementById("gameID").disabled = false;
+	cachedGameID = false;
+	return;
+}
+
 async function startNewGame()
 {
 	var gameID = document.getElementById("gameID");
-	if (cachedGameID)
-	{
-		document.getElementById("restartButton").innerHTML = "Start new game";
-		gameID.value = "Game Aborted";
-		gameID.disabled = false;
-		cachedGameID = false;
-		return;
-	}
+	var restartButton = document.getElementById("restartButton");
+
 	
 	document.getElementById("gameStatus").innerHTML = "Waiting for partner to connect";
 	gameID.value = "Getting game ID...";
@@ -125,18 +132,22 @@ async function startNewGame()
 		await sleep (250);
 	}
 	document.getElementById("restartButton").disabled = false;
-	document.getElementById("restartButton").innerHTML = "Abort game";
+	document.getElementById("restartButton").innerHTML = "Stop game";
 	cachedGameID = gameID.value;
-	myTeam = "BLUE";
+	myTeam = "BLUE"; //The game creator is always given blue.
 	document.getElementById("team").value = "BLUE";
-	mainGameLoop()
+	document.getElementById("title").innerHTML = "Game currently playing"
+	restartButton.onclick=function () {leaveGame()};
+	restartButton.innerHTML="Leave game";
+	mainGameLoop();
 	
 }
 
 function tryJoinGame()
 {
-	document.getElementById("gameStatus").innerHTML = "Attempting to join game...";
+	var restartButton = document.getElementById("restartButton");
 	var xmlhttp = new XMLHttpRequest();
+	document.getElementById("gameStatus").innerHTML = "Attempting to join game...";
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			console.log(this.responseText);
@@ -152,7 +163,8 @@ function tryJoinGame()
 			gameStatus.innerHTML = "Found game! Initializing...";
 			cachedGameID = gameID.value;
 			document.getElementById("gameID").disabled = true;
-			document.getElementById("restartButton").innerHTML = "Abort game";
+			restartButton.onclick=function () {leaveGame()};
+			restartButton.innerHTML="Leave game";
 			if(response.p2joined == false) //Is this the first time p2 has joined? The DB has been already updated to state that p2 has joined. This is a cached value.
 			{
 				console.log("Joining the existing game as RED");
@@ -165,6 +177,7 @@ function tryJoinGame()
 				myTeam = response.TURN;
 				document.getElementById("team").value = response.TURN;
 			}
+			document.getElementById("title").innerHTML = "Game currently playing"
 			mainGameLoop();
 		}
 	};

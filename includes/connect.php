@@ -5,10 +5,10 @@
  */
 function makePDOConnection()
 {
-	$dbhost = "YourHost";
-	$dbuser = "YourUserName";
-	$dbpass = "YourPassword";
-	$database = "YourDB";
+	$dbhost = "host";
+	$dbuser = "user";
+	$dbpass = "pass";
+	$database = "db";
 	try
 	{
 		$dbh = new PDO("mysql:host=$dbhost;dbname=$database", $dbuser, $dbpass);
